@@ -28,7 +28,6 @@ class UzayAraci:
 
 
         if arac.mesafeSaatOlarak == 0 and arac.vardiMi == "YOLDA":
-            arac.cikisGezegeni = arac.varisGezegeni
             arac.varisGezegeni = ""
             arac.vardiMi = "VARDI"
     
@@ -84,16 +83,39 @@ class UzayAraci:
                 arac.varisYili = varisYili
 
     def nufusKontrolu(self, araclar, kisiler, gezegenler):
+        # Her tur başında tüm araç ve gezegen nüfuslarını sıfırla
+        for arac in araclar:
+            arac.nufus = 0
+        for gezegen in gezegenler:
+            gezegen.nufus = 0
+
+        # 1. Her kişiyi yalnızca bulunduğu uzay aracına say
         for insan in kisiler:
             bagli_arac = next((a for a in araclar if a.uzayAraciAdi == insan.bulunduguUzayAraci), None)
-            if bagli_arac:
+            if bagli_arac and insan.durumu=="canlı":
                 bagli_arac.nufus += 1
 
+        # 2. Araç hangi durumdaysa ona göre gezegenin nüfusunu artır
         for arac in araclar:
-            if(arac.vardiMi=="BEKLİYOR"):
+            if arac.vardiMi == "BEKLİYOR":
+                # Hâlâ çıkış gezegenindeyse, çıkış gezegenine bu aracı ve içindekileri say
                 cikisGezegeni = next((g for g in gezegenler if g.gezegenAdi == arac.cikisGezegeni), None)
-                cikisGezegeni.nufus = arac.nufus
-            elif(arac.vardiMi=="VARDI"):
+                if cikisGezegeni:
+                    cikisGezegeni.nufus += arac.nufus
+
+            elif arac.vardiMi == "VARDI":
+                # Vardıysa varış gezegenine bu aracın içindekileri say
                 varisGezegeni = next((g for g in gezegenler if g.gezegenAdi == arac.varisGezegeni), None)
-                varisGezegeni.nufus = arac.nufus
+                if varisGezegeni:
+                    varisGezegeni.nufus += arac.nufus
+            
+            elif arac.vardiMi == "YOLDA":
+                # Vardıysa varış gezegenine bu aracın içindekileri say
+                varisGezegeni = next((g for g in gezegenler if g.gezegenAdi == arac.varisGezegeni), None)
+                if varisGezegeni:
+                    varisGezegeni.nufus -= arac.nufus
+
+
+           
+
                 
