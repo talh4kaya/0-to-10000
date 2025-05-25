@@ -12,8 +12,7 @@ def simulasyon():
 
     for arac in araclar:
         arac.varisTarihiHesaplayici(arac,gezegenler)
-        arac.nufusKontrolu(araclar,kisiler,gezegenler)
-
+       
     while True:
 
         do.ekranaYazdirici(araclar, kisiler, gezegenler)
@@ -26,6 +25,8 @@ def simulasyon():
 
         for arac in araclar:
             arac.uzayAraciGuncelle(arac,gezegenler)  
+            arac.nufusKontrolu(araclar,kisiler,gezegenler)
+
            
 
         
